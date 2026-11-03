@@ -5,6 +5,9 @@
 
 #include "Array.t"
 
+// Replica.cc destroys a Req_queue but only sees Array.h.
+template class Array<Req_queue::PNode>;
+
 Req_queue::Req_queue() : reqs(PNode(), node->np()), head(0), 
   tail(0), nelems(0), nbytes(0)  {}
 
