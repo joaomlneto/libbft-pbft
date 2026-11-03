@@ -7,7 +7,7 @@
 # how .github/workflows/build.yml runs it; it installs its own build dependencies there. It builds
 # a copy, so the source tree is left untouched.
 #
-#   SFSlite              ./configure && make && make install
+#   SFSlite              ./setup.gnu -fi (generates the build system) && ./configure && make && make install
 #   libbyz (BFT)         then bft-simple
 #   libbyz (BASE)        then simple; BASE is switched on in State_defs.h, as the README says
 #
@@ -21,7 +21,8 @@ SFS_PREFIX=/opt/sfslite
 
 if command -v apt-get >/dev/null && [ "$(id -u)" = 0 ]; then
   apt-get -o Acquire::Check-Valid-Until=false update
-  apt-get install -y --force-yes --no-install-recommends g++ make libgmp-dev bison flex file
+  apt-get install -y --force-yes --no-install-recommends \
+    g++ make libgmp-dev bison flex file autoconf automake libtool
 fi
 
 rm -rf "${BUILD}"
@@ -29,7 +30,7 @@ cp -a "${SRC}" "${BUILD}"
 cd "${BUILD}"
 
 echo "::group::SFSlite"
-(cd sfslite-1.2 && ./configure --prefix="${SFS_PREFIX}" && make -j"$(nproc)" && make install)
+(cd sfslite-1.2 && sh setup.gnu -fi && ./configure --prefix="${SFS_PREFIX}" && make -j"$(nproc)" && make install)
 echo "::endgroup::"
 
 # The Makefiles find SFSlite and GMP through these two links, as the README sets them up.

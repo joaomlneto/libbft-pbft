@@ -53,8 +53,3 @@ dkms.conf
 
 # debug information files
 *.dwo
-
-# autoconf cache
-autom4te.cache/
-# configure output
-config.log

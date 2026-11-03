@@ -16,8 +16,10 @@ BASEFS code in some time.  If it doesn't work for you let me know.
 
 Building on a current machine: the code assumes 32-bit x86 Linux. ci/build.sh
 is the tested build (SFSlite, libbyz for BFT and BASE, bft-simple, simple),
-run by .github/workflows/build.yml in a Debian 8 i386 container. bfs and difs
-do not build on current kernels' NFS headers.
+run by .github/workflows/build.yml in a Debian 8 i386 container. SFSlite's
+build system is not committed: generate it with "./setup.gnu -fi" in
+sfslite-1.2 (needs autoconf, automake and libtool) before ./configure. bfs and
+difs do not build on current kernels' NFS headers.
 
 Compilation instructions (assumes bash shell):
 
