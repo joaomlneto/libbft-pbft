@@ -56,3 +56,5 @@ dkms.conf
 
 # autoconf cache
 autom4te.cache/
+# configure output
+config.log
