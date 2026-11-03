@@ -1,0 +1,26 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  i386:
+    name: SFSlite, libbyz (BFT and BASE), bft-simple, simple
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      # 32-bit, because the code assumes it (an x86_64 build aborts in Node::new_tstamp). An x86_64
+      # runner executes i386 natively; the container only supplies Debian 8's gcc 4.9 and glibc.
+      - name: Build
+        run: docker run --rm --platform linux/386 -v "$PWD:/src:ro" debian/eol:jessie bash /src/ci/build.sh /src

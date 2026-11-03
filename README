@@ -14,9 +14,17 @@ Thanks to Petros Maniatis for some bug fixes, and probably other
 people I've forgotten - thanks tho!  I haven't tested the BFS or
 BASEFS code in some time.  If it doesn't work for you let me know.
 
+Building on a current machine: the code assumes 32-bit x86 Linux. ci/build.sh
+is the tested build (SFSlite, libbyz for BFT and BASE, bft-simple, simple),
+run by .github/workflows/build.yml in a Debian 8 i386 container. SFSlite's
+generated build system is not committed, so the steps below start by
+generating it (needs autoconf, automake and libtool). bfs and difs do not
+build on current kernels' NFS headers.
+
 Compilation instructions (assumes bash shell):
 
 cd sfslite-1.2
+./setup.gnu -fi
 mkdir install
 export SFSHOME=`pwd`
 ./configure --prefix=$SFSHOME/install

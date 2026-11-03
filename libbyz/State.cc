@@ -73,7 +73,7 @@ struct Block {
 #ifndef NO_STATE_TRANSLATION
   inline ~Block() { if (data) delete [] data; }
 
-  inline void Block::init_from_ptr(char *ptr, int psize) {
+  inline void init_from_ptr(char *ptr, int psize) {
     if (data) delete [] data;
     data = ptr;
     size = psize;  

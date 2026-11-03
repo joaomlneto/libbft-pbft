@@ -8,7 +8,7 @@
 #include "Principal.h"
 #include "MD5.h"
 
-Pre_prepare::Pre_prepare(View v, Seqno s, Req_que  ue &reqs) :
+Pre_prepare::Pre_prepare(View v, Seqno s, Req_queue &reqs) :
   Message(Pre_prepare_tag, Max_message_size) {
   rep().view = v;
   rep().seqno = s;

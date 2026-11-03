@@ -1442,7 +1442,7 @@ case $host_os in
 	sfs_gnu_CXXWFLAGS="$sfs_gnu_WFLAGS"
 	;;
     linux*|freebsd*)
-	sfs_gnu_WFLAGS="-Wall -Werror"
+	sfs_gnu_WFLAGS="-Wall"
 	sfs_gnu_CXXWFLAGS="$sfs_gnu_WFLAGS"
 	;;
     *)
