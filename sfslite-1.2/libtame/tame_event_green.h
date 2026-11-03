@@ -31,7 +31,7 @@ public:
   void reinit (const _tame_slot_set<T> &ss, closure_ptr_t c, const char *loc) 
   {
     _event_cancel_base::reinit (loc);
-    slot_set_reassign (ss);
+    this->slot_set_reassign (ss);
     _closure = c;
   }
 
