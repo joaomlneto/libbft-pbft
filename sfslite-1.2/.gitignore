@@ -27,5 +27,8 @@ config.h.in~
 /autoconf.h
 /libtool
 /stamp-h1
-Makefile
+# Only where configure writes them: dist/ and Attic/ hold hand-written Makefiles.
+/Makefile
+/*/Makefile
+/tools/rtftp/Makefile
 .deps/
