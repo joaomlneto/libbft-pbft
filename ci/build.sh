@@ -47,14 +47,15 @@ echo "::endgroup::"
 
 # The clock libbyz was built with (see libbyz/Cycle_counter.h): clock_gettime, unless this is x86
 # and USE_CLOCK_GETTIME is not set.
-case "$(uname -m):${EXTRA_CPPFLAGS}" in
-  i?86:*USE_CLOCK_GETTIME*|x86_64:*USE_CLOCK_GETTIME*) want=clock_gettime ;;
-  i?86:*|x86_64:*) want=rdtsc ;;
+target="$(g++ -dumpmachine)"
+case "${target}:${EXTRA_CPPFLAGS}" in
+  i?86-*:*USE_CLOCK_GETTIME*|x86_64-*:*USE_CLOCK_GETTIME*) want=clock_gettime ;;
+  i?86-*|x86_64-*) want=rdtsc ;;
   *) want=clock_gettime ;;
 esac
 syms="$(nm libbyz/libbyz.a)"
 if grep -q ' U clock_gettime$' <<<"${syms}"; then got=clock_gettime; else got=rdtsc; fi
-echo "libbyz clock on $(uname -m): ${got}"
+echo "libbyz clock on ${target}: ${got}"
 [ "${got}" = "${want}" ] || { echo "expected the ${want} clock" >&2; exit 1; }
 
 echo "::group::libbyz (BASE) and simple"
