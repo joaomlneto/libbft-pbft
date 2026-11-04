@@ -7,7 +7,7 @@ MAKEDEPEND:=makedepend -Y
 LIBBYZ:=../libbyz/libbyz.a
 INCS:=-I../gmp -I../libbyz -I../sfs/include/sfslite
 #CPPFLAGS:= $(INCS) -ggdb -Wall  
-CPPFLAGS:= $(INCS) -O3 -march=pentiumpro -fno-exceptions -DNDEBUG 
+CPPFLAGS:= $(INCS) -O3 -fno-exceptions -DNDEBUG $(EXTRA_CPPFLAGS)
 C:=gcc
 CFLAGS:= $(CPPFLAGS)
 LIBDIRS:=-L../gmp -L../libbyz -L../sfs/lib/sfslite #-L../sfs/async -L../sfs/crypt 

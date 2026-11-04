@@ -8,7 +8,8 @@ MAKEDEPEND:=makedepend -Y
 MAKE=gmake
 INCS:=-I../gmp -I../sfs/include/sfslite
 
-CPPFLAGS:= $(INCS) -g -Wall -DRECOVERY 
+# EXTRA_CPPFLAGS: e.g. make EXTRA_CPPFLAGS=-DUSE_CLOCK_GETTIME (see Cycle_counter.h)
+CPPFLAGS:= $(INCS) -g -Wall -DRECOVERY $(EXTRA_CPPFLAGS)
 #CPPFLAGS:= $(INCS) -O9 -funroll-loops -ffast-math -malign-double -march=pentiumpro -fomit-frame-pointer -fno-exceptions -DNDEBUG 
 #CPPFLAGS:= $(INCS) -O3 -march=pentiumpro -fomit-frame-pointer -fno-exceptions -DNDEBUG   -DRECOVERY
 #CPPFLAGS:= $(INCS) -O3 -march=pentiumpro -fno-exceptions -DNDEBUG   -DRECOVERY -pg

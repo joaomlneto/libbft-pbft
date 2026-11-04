@@ -6,7 +6,7 @@ RANLIB:=ranlib
 MAKEDEPEND:=makedepend -Y
 LIBBYZ:=../libbyz/libbyz.a
 INCS:=-I../gmp -I../libbyz -I../sfs/include/sfs 
-CPPFLAGS:= $(INCS) -ggdb -Wall  
+CPPFLAGS:= $(INCS) -ggdb -Wall $(EXTRA_CPPFLAGS)
 #CPPFLAGS:= $(INCS) -O3 -march=pentiumpro -fno-exceptions -DNDEBUG 
 C:=gcc
 CFLAGS:= $(CPPFLAGS)

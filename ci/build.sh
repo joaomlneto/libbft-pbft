@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# Build everything in this repository that builds, on the platform it targets: 32-bit x86 Linux.
+# Build everything in this repository that builds, on Linux i386, amd64 or arm64.
 #
 #   ci/build.sh [source-dir]      (default: the repository this script is in)
+#   EXTRA_CPPFLAGS=-DUSE_CLOCK_GETTIME ci/build.sh    (libbyz's clock_gettime clock on x86 too)
 #
-# Meant for a throwaway debian/eol:jessie container on linux/386 (Debian 8, gcc 4.9), which is
-# how .github/workflows/build.yml runs it; it installs its own build dependencies there. It builds
-# a copy, so the source tree is left untouched.
+# Meant for a throwaway debian/eol:jessie container (Debian 8, gcc 4.9), which is how
+# .github/workflows/build.yml runs it; it installs its own build dependencies there. It builds a
+# copy, so the source tree is left untouched.
 #
 #   SFSlite              ./setup.gnu -fi (generates the build system) && ./configure && make && make install
 #   libbyz (BFT)         then bft-simple
@@ -14,6 +15,8 @@
 # Not built: bfs and difs. Both mount NFSv2 through the kernel's legacy nfs_mount_data interface,
 # and their nfs.h collides with <linux/nfs.h>; building them needs a port, not a build fix.
 set -euo pipefail
+
+export EXTRA_CPPFLAGS="${EXTRA_CPPFLAGS:-}"
 
 SRC="$(cd "${1:-$(dirname "$0")/..}" && pwd)"
 BUILD=/tmp/libbft-build
@@ -41,6 +44,18 @@ echo "::group::libbyz (BFT) and bft-simple"
 make -C libbyz
 make -C bft-simple
 echo "::endgroup::"
+
+# The clock libbyz was built with (see libbyz/Cycle_counter.h): clock_gettime, unless this is x86
+# and USE_CLOCK_GETTIME is not set.
+case "$(uname -m):${EXTRA_CPPFLAGS}" in
+  i?86:*USE_CLOCK_GETTIME*|x86_64:*USE_CLOCK_GETTIME*) want=clock_gettime ;;
+  i?86:*|x86_64:*) want=rdtsc ;;
+  *) want=clock_gettime ;;
+esac
+syms="$(nm libbyz/libbyz.a)"
+if grep -q ' U clock_gettime$' <<<"${syms}"; then got=clock_gettime; else got=rdtsc; fi
+echo "libbyz clock on $(uname -m): ${got}"
+[ "${got}" = "${want}" ] || { echo "expected the ${want} clock" >&2; exit 1; }
 
 echo "::group::libbyz (BASE) and simple"
 sed -i 's|^//#define BASE|#define BASE|' libbyz/State_defs.h

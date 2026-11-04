@@ -1,6 +1,13 @@
 #ifndef _Cycle_counter_h
 #define _Cycle_counter_h 1
 
+// libbyz counts time in "cycles" and converts with clock_mhz (cycles per microsecond). On x86 a
+// cycle is a TSC tick, read with RDTSC. Elsewhere, or when built with -DUSE_CLOCK_GETTIME, it is a
+// nanosecond of CLOCK_MONOTONIC, so clock_mhz is exactly 1000 and time comes from a system call.
+// Every translation unit must agree on the choice, so set it for the whole build.
+#if (defined(__i386__) || defined(__x86_64__)) && !defined(USE_CLOCK_GETTIME)
+#define BYZ_CYCLES_ARE_TSC 1
+
 static inline long long rdtsc(void) {
   union {
     struct {
@@ -14,6 +21,15 @@ static inline long long rdtsc(void) {
                     : "=a" (v.w32.l), "=d" (v.w32.h) :);
   return v.w64;
 }
+#else
+#include <time.h>
+
+static inline long long rdtsc(void) {
+  struct timespec t;
+  clock_gettime(CLOCK_MONOTONIC, &t);
+  return (long long)t.tv_sec * 1000000000LL + t.tv_nsec;
+}
+#endif
 
 
 class Cycle_counter {
@@ -48,7 +64,11 @@ private:
   // Cycle_counter c; c.start(); c.stop(); 
   //
   // The purpose is to avoid counting in the measurement overhead.
+#ifdef BYZ_CYCLES_ARE_TSC
   static const long long calibration = 37;
+#else
+  static const long long calibration = 0;
+#endif
 };
 
 

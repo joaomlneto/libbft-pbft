@@ -41,7 +41,7 @@ typedef long int Bits64;
 #endif
 
 
-#ifdef __x86_64__
+#if defined(__x86_64__) || defined(__aarch64__)
 
 #define LONG_SIGN_BIT_MASK 0x8000000000000000UL
 #define INT_SIGN_BIT_MASK 0x80000000UL

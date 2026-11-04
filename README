@@ -14,12 +14,17 @@ Thanks to Petros Maniatis for some bug fixes, and probably other
 people I've forgotten - thanks tho!  I haven't tested the BFS or
 BASEFS code in some time.  If it doesn't work for you let me know.
 
-Building on a current machine: the code assumes 32-bit x86 Linux. ci/build.sh
-is the tested build (SFSlite, libbyz for BFT and BASE, bft-simple, simple),
-run by .github/workflows/build.yml in a Debian 8 i386 container. SFSlite's
-generated build system is not committed, so the steps below start by
-generating it (needs autoconf, automake and libtool). bfs and difs do not
-build on current kernels' NFS headers.
+Building on a current machine: Linux on 32-bit x86, x86_64 or aarch64.
+ci/build.sh is the tested build (SFSlite, libbyz for BFT and BASE, bft-simple,
+simple), run by .github/workflows/build.yml in Debian 8 containers for each of
+the three. SFSlite's generated build system is not committed, so the steps
+below start by generating it (needs autoconf, automake and libtool). bfs and
+difs do not build on current kernels' NFS headers.
+
+Clock: on x86, libbyz times itself with the TSC (RDTSC). On other
+architectures, or when every make below is given
+EXTRA_CPPFLAGS=-DUSE_CLOCK_GETTIME, it uses clock_gettime(CLOCK_MONOTONIC)
+instead (see libbyz/Cycle_counter.h).
 
 Compilation instructions (assumes bash shell):
 
