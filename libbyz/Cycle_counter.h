@@ -3,7 +3,8 @@
 
 // libbyz counts time in "cycles" and converts with clock_mhz (cycles per microsecond). On x86 a
 // cycle is a TSC tick, read with RDTSC. Elsewhere, or when built with -DUSE_CLOCK_GETTIME, it is a
-// nanosecond of CLOCK_MONOTONIC, so clock_mhz is exactly 1000 and time comes from a system call.
+// nanosecond of CLOCK_MONOTONIC read with libc's clock_gettime (which an emulator can interpose),
+// and clock_mhz is exactly 1000.
 // Every translation unit must agree on the choice, so set it for the whole build.
 #if (defined(__i386__) || defined(__x86_64__)) && !defined(USE_CLOCK_GETTIME)
 #define BYZ_CYCLES_ARE_TSC 1
