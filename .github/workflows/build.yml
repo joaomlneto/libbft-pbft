@@ -14,13 +14,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  i386:
-    name: SFSlite, libbyz (BFT and BASE), bft-simple, simple
-    runs-on: ubuntu-24.04
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # An x86_64 runner executes i386 natively; the containers only supply Debian 8's gcc 4.9
+          # and glibc.
+          - { name: i386, runner: ubuntu-24.04, platform: linux/386 }
+          - { name: amd64, runner: ubuntu-24.04, platform: linux/amd64 }
+          - { name: amd64 (clock_gettime), runner: ubuntu-24.04, platform: linux/amd64, cppflags: -DUSE_CLOCK_GETTIME }
+          - { name: arm64, runner: ubuntu-24.04-arm, platform: linux/arm64 }
     steps:
       - uses: actions/checkout@v4
-      # 32-bit, because the code assumes it (an x86_64 build aborts in Node::new_tstamp). An x86_64
-      # runner executes i386 natively; the container only supplies Debian 8's gcc 4.9 and glibc.
-      - name: Build
-        run: docker run --rm --platform linux/386 -v "$PWD:/src:ro" debian/eol:jessie bash /src/ci/build.sh /src
+      - name: SFSlite, libbyz (BFT and BASE), bft-simple, simple
+        run: >-
+          docker run --rm --platform ${{ matrix.platform }} -e EXTRA_CPPFLAGS='${{ matrix.cppflags }}'
+          -v "$PWD:/src:ro" debian/eol:jessie bash /src/ci/build.sh /src

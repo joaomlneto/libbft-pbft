@@ -3,7 +3,9 @@
 long long clock_mhz = 0;
 
 void init_clock_mhz() {
-#ifndef USE_GETTIMEOFDAY
+#if !defined(USE_GETTIMEOFDAY) && !defined(BYZ_CYCLES_ARE_TSC)
+  clock_mhz = 1000;
+#elif !defined(USE_GETTIMEOFDAY)
   struct timeval t0,t1;
   
   long long c0 = rdtsc();

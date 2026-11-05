@@ -415,10 +415,8 @@ Request_id Node::new_rid() {
 void Node::new_tstamp() {
   struct timeval t;
   gettimeofday(&t, 0);
-  th_assert(sizeof(t.tv_sec) <= sizeof(int), "tv_sec is too big");
-  Long tstamp = t.tv_sec;
-  long int_bits = sizeof(int)*8;
-  cur_rid = tstamp << int_bits; 
+  // Request ids are the time in seconds in the high 32 bits and a counter in the low 32.
+  cur_rid = (Request_id)(unsigned int)t.tv_sec << 32;
 }
 
 void atimer_handler() {
